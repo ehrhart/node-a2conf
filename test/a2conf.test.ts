@@ -210,18 +210,18 @@ test('include_glob', async () => {
 test('replace', async () => {
   const root = await fromText(examples['c1'])
 
-  const ssl = root.children('SSLEngine', { recursive: true }).next().value
+  const ssl = root.children('SSLEngine', { recursive: true })[0]
   ssl.args = 'off'
 
-  const ssl2 = root.children('SSLEngine', { recursive: true }).next().value
+  const ssl2 = root.children('SSLEngine', { recursive: true })[0]
   expect(ssl2.args).toEqual('off')
 })
 
 test('first', async () => {
   const root = await fromText(examples['c1'])
 
-  const name1 = root.children('servername', { recursive: true }).next().value
-  const name2 = root.children('servername', { recursive: true }).next().value
+  const name1 = root.children('servername', { recursive: true })[0]
+  const name2 = root.children('servername', { recursive: true })[0]
   const name3 = root.first('servername', { recursive: true })
   expect(name1).toEqual(name2)
   expect(name2).toEqual(name3)

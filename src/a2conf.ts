@@ -230,38 +230,37 @@ export class Node {
     this.content = this.content.filter((c) => ff(pattern, c))
   }
 
-  *children(
-    name?: string,
-    { recursive } = { recursive: false }
-  ): IterableIterator<Node> {
+  children(name?: string, { recursive } = { recursive: false }): Node[] {
+    const nodes = []
     if (this.content) {
       for (const c of this.content) {
         if (name) {
           // filter by cmd/section
           if (c.name.toLowerCase() === name.toLowerCase()) {
-            yield c
+            nodes.push(c)
           }
         } else {
-          yield c
+          nodes.push(c)
         }
 
         if (recursive && c.content) {
           for (const subc of c.children(name, { recursive })) {
-            yield subc
+            nodes.push(subc)
           }
         }
       }
     }
+    return nodes
   }
 
-  first(name: string, { recursive } = { recursive: false }) {
+  first(name: string, { recursive } = { recursive: false }): Node | undefined {
     /**
      * Wrapper for children to get only first element or None
      * :param name: name of element, e.g. ServerName or SSLEngine
      * :param recursive:
-     * :return: Element or None
+     * :return: Node or undefined
      */
-    return this.children(name, { recursive }).next().value
+    return this.children(name, { recursive })[0]
   }
 
   extend(n: Node) {
@@ -458,7 +457,7 @@ export class Node {
   findVHost(hostname: string, arg?: string) {
     function getAllHostnames(vhost: Node) {
       const names = []
-      const servername = vhost.children('ServerName').next().value.args
+      const servername = vhost.first('ServerName')?.args
       names.push(servername)
       for (const alias of vhost.children('ServerAlias')) {
         names.push(...alias.args.split(' '))
