@@ -262,6 +262,10 @@ test('set', async () => {
 </VirtualHost>`)
 
   root.findVHost('example.com')?.set('SSLEngine', 'Off')
-
   expect(root.findVHost('example.com')?.first('SSLEngine')?.args).toEqual('Off')
+
+  root.findVHost('example.com')?.set('ProxyRequests', 'Off')
+  expect(root.findVHost('example.com')?.first('ProxyRequests')?.args).toEqual(
+    'Off'
+  )
 })

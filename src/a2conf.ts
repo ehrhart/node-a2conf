@@ -206,8 +206,13 @@ export class Node {
   }
 
   set(name: string, value: string) {
-    for (const property of this.children(name)) {
-      property.args = value
+    const properties = this.children(name)
+    if (properties.length === 0) {
+      this.insert(`${name} ${value}`)
+    } else {
+      for (const property of properties) {
+        property.args = value
+      }
     }
   }
 
